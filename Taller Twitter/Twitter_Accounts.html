@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1>Mentions</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1>Mentions</h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 400px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 400px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "HouseofDragon", "label": "HouseofDragon", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud835\udc69\ud835\udc6d\u2718", "label": "\ud835\udc69\ud835\udc6d\u2718", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "annnnberil ideeeerus", "label": "annnnberil ideeeerus", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "D", "label": "D", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Praise Hopewell", "label": "Praise Hopewell", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "#HOTD SPOILERS #TeamBlack\ud83d\udc09\ud83d\udda4 \uea00/ #\uc288\ud37c\uc8fc\ub2c8\uc5b4 \ud83d\udc99 \u5e0c", "label": "#HOTD SPOILERS #TeamBlack\ud83d\udc09\ud83d\udda4 \uea00/ #\uc288\ud37c\uc8fc\ub2c8\uc5b4 \ud83d\udc99 \u5e0c", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Anouska", "label": "Anouska", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "A COROA\u00c7\u00c3O DO AEGON II \ud83d\udc51 | 12+1 \ud83c\udde7\ud83c\uddf7", "label": "A COROA\u00c7\u00c3O DO AEGON II \ud83d\udc51 | 12+1 \ud83c\udde7\ud83c\uddf7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "H.A. Barasa\ud83d\ude0e", "label": "H.A. Barasa\ud83d\ude0e", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jorr", "label": "Jorr", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ned \ud83c\uddec\ud83c\udded", "label": "ned \ud83c\uddec\ud83c\udded", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BellesBinges #moviethots", "label": "BellesBinges #moviethots", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Maegor", "label": "Maegor", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "harmony", "label": "harmony", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bryan Kimenyi", "label": "Bryan Kimenyi", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Snell\u0027s\ud83d\udda4\ud83d\udc99", "label": "Snell\u0027s\ud83d\udda4\ud83d\udc99", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83e\udd87 KAUL: Spooky Femboy \ud83c\udff3\ufe0f\u200d\u26a7\ufe0f", "label": "\ud83e\udd87 KAUL: Spooky Femboy \ud83c\udff3\ufe0f\u200d\u26a7\ufe0f", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Pretty Little Dolls/ PLL", "label": "Pretty Little Dolls/ PLL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nym\u0027", "label": "Nym\u0027", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "khaleesi\ud83d\udc09", "label": "khaleesi\ud83d\udc09", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Hector Jairo Quevedo", "label": "Hector Jairo Quevedo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Lola Targaryen", "label": "Lola Targaryen", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Iwantapetduck", "label": "Iwantapetduck", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u044e\u043b\u044f \u0433\u0443\u0434\u043e\u043a", "label": "\u044e\u043b\u044f \u0433\u0443\u0434\u043e\u043a", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "manu :)", "label": "manu :)", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DIVA\u2661", "label": "DIVA\u2661", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Walter graham", "label": "Walter graham", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nojoud Al Rumaihi", "label": "Nojoud Al Rumaihi", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "black shakespeare", "label": "black shakespeare", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rhyseni", "label": "Rhyseni", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Chanjira S.", "label": "Chanjira S.", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "well", "label": "well", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u0414\u0430\u043d\u0438\u0438\u043b \u041a\u043e\u0440\u0442\u0435\u0437", "label": "\u0414\u0430\u043d\u0438\u0438\u043b \u041a\u043e\u0440\u0442\u0435\u0437", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sam", "label": "Sam", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Melissa\u2077. \u00b2\u2070\u00b9\u00b3 \u27ed\u27ec\ud83d\udc9c\ud83e\udde8", "label": "Melissa\u2077. \u00b2\u2070\u00b9\u00b3 \u27ed\u27ec\ud83d\udc9c\ud83e\udde8", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Prof.Obale Joseph", "label": "Prof.Obale Joseph", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Abbakar_saddeeq\u264b", "label": "Abbakar_saddeeq\u264b", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "iaMai", "label": "iaMai", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Eren Mimtas", "label": "Eren Mimtas", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "M4rio_2001", "label": "M4rio_2001", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u0631\u0647\u0627 \u0628\u0627\u0646\u0648", "label": "\u0631\u0647\u0627 \u0628\u0627\u0646\u0648", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83c\udfac", "label": "\ud83c\udfac", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u8352\u5e61\u306e\u72f8", "label": "\u8352\u5e61\u306e\u72f8", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83c\udf49\ud83d\udc3cDanicaJane\ud83d\udc36\ud83c\udf49", "label": "\ud83c\udf49\ud83d\udc3cDanicaJane\ud83d\udc36\ud83c\udf49", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u043a\u0454\u2113\u2113y", "label": "\u043a\u0454\u2113\u2113y", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TheParmesanDon", "label": "TheParmesanDon", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "es tariq beep bop", "label": "es tariq beep bop", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Not_Adela", "label": "Not_Adela", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ana \u2726 TEM O ALBEDO", "label": "ana \u2726 TEM O ALBEDO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "skander", "label": "skander", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kuina \ud83c\udf38", "label": "Kuina \ud83c\udf38", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jesse W Jackson - Vote Blue!", "label": "Jesse W Jackson - Vote Blue!", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "drew", "label": "drew", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Free mover \ud83c\udf1c\ud83c\udf1b", "label": "Free mover \ud83c\udf1c\ud83c\udf1b", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Gatosombra", "label": "Gatosombra", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Calli", "label": "Calli", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jeon Anj \u2077 \u27ed\u27ec\ud83d\udc9c\u27ec\u27ed", "label": "Jeon Anj \u2077 \u27ed\u27ec\ud83d\udc9c\u27ec\u27ed", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Invictus Boredom", "label": "Invictus Boredom", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "bochinche \ud83c\uddf3\ud83c\uddee", "label": "bochinche \ud83c\uddf3\ud83c\uddee", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ManuelWar", "label": "ManuelWar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kyle White", "label": "Kyle White", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Big Moon \ud83e\udd81", "label": "Big Moon \ud83e\udd81", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Luke Sowerby/LSARTWORK \ud83c\uddec\ud83c\udde7", "label": "Luke Sowerby/LSARTWORK \ud83c\uddec\ud83c\udde7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u2765Lillian\ud83c\udf35\ud83d\udd25\ud83e\udee6\ud83e\udd9a\ud83d\udc7d", "label": "\u2765Lillian\ud83c\udf35\ud83d\udd25\ud83e\udee6\ud83e\udd9a\ud83d\udc7d", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nonie May", "label": "Nonie May", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Katrina MacDamaged", "label": "Katrina MacDamaged", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Elves Vilar Dias", "label": "Elves Vilar Dias", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "opk", "label": "opk", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jay.", "label": "Jay.", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Da\u0146iel | Translator \ud83c\uddfa\ud83c\uddf8\ud83c\uddea\ud83c\udde6\ud83c\udde7\ud83c\uddf7\ud83c\udfb8\ud83c\udfa7", "label": "Da\u0146iel | Translator \ud83c\uddfa\ud83c\uddf8\ud83c\uddea\ud83c\udde6\ud83c\udde7\ud83c\uddf7\ud83c\udfb8\ud83c\udfa7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u0650", "label": "\u0650", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "FM7", "label": "FM7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Michael", "label": "Michael", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Pawor", "label": "Pawor", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Samuel", "label": "Samuel", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Elain (taylor\u0027s version) // TEAM BLACK \ud83d\udda4\u2728", "label": "Elain (taylor\u0027s version) // TEAM BLACK \ud83d\udda4\u2728", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Karma", "label": "Karma", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "two people in one body", "label": "two people in one body", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Charlay King", "label": "Charlay King", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HBO", "label": "HBO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BenKearns6", "label": "BenKearns6", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BellesBinges", "label": "BellesBinges", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "hbomax", "label": "hbomax", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "StaceyF75387271", "label": "StaceyF75387271", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "KeeganAllen", "label": "KeeganAllen", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "vzrosly_content", "label": "vzrosly_content", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Spanish_Kortez", "label": "Spanish_Kortez", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "nojoud_r", "label": "nojoud_r", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "houseofdragontv", "label": "houseofdragontv", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HBOHouseDragon", "label": "HBOHouseDragon", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HOTDBr", "label": "HOTDBr", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "luisasonza", "label": "luisasonza", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ricardo", "label": "Ricardo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BenzoateOst", "label": "BenzoateOst", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u0412\u0417\u0420\u041e\u0421\u041b\u042b\u0419 \u041a\u041e\u041d\u0422\u0415\u041d\u0422", "label": "\u0412\u0417\u0420\u041e\u0421\u041b\u042b\u0419 \u041a\u041e\u041d\u0422\u0415\u041d\u0422", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DeadlineWH", "label": "DeadlineWH", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Mr. Anderson", "label": "Mr. Anderson", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "cornellbelcher", "label": "cornellbelcher", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Djawadi_Ramin", "label": "Djawadi_Ramin", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "GameOfThrones", "label": "GameOfThrones", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "GRRMspeaking", "label": "GRRMspeaking", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Schildkrote13", "label": "Schildkrote13", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "dcemyra", "label": "dcemyra", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "WendyHembrock", "label": "WendyHembrock", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "JesseJacksonDFW", "label": "JesseJacksonDFW", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SCM_Pod", "label": "SCM_Pod", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TNRLM", "label": "TNRLM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "C_Peruski", "label": "C_Peruski", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "beingmeistiring", "label": "beingmeistiring", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "housedirewolf", "label": "housedirewolf", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "uzuriartonline", "label": "uzuriartonline", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "HouseofDragon", "to": "\ud835\udc69\ud835\udc6d\u2718", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "annnnberil ideeeerus", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "D", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Praise Hopewell", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "#HOTD SPOILERS #TeamBlack\ud83d\udc09\ud83d\udda4 \uea00/ #\uc288\ud37c\uc8fc\ub2c8\uc5b4 \ud83d\udc99 \u5e0c", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Anouska", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "A COROA\u00c7\u00c3O DO AEGON II \ud83d\udc51 | 12+1 \ud83c\udde7\ud83c\uddf7", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "H.A. Barasa\ud83d\ude0e", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Jorr", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "ned \ud83c\uddec\ud83c\udded", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "BellesBinges #moviethots", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Maegor", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "harmony", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Bryan Kimenyi", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Snell\u0027s\ud83d\udda4\ud83d\udc99", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\ud83e\udd87 KAUL: Spooky Femboy \ud83c\udff3\ufe0f\u200d\u26a7\ufe0f", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Pretty Little Dolls/ PLL", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Nym\u0027", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "khaleesi\ud83d\udc09", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Hector Jairo Quevedo", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Lola Targaryen", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Iwantapetduck", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\u044e\u043b\u044f \u0433\u0443\u0434\u043e\u043a", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "manu :)", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "DIVA\u2661", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Walter graham", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Nojoud Al Rumaihi", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "black shakespeare", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Rhyseni", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Chanjira S.", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "well", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\u0414\u0430\u043d\u0438\u0438\u043b \u041a\u043e\u0440\u0442\u0435\u0437", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Sam", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Melissa\u2077. \u00b2\u2070\u00b9\u00b3 \u27ed\u27ec\ud83d\udc9c\ud83e\udde8", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Prof.Obale Joseph", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Abbakar_saddeeq\u264b", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "iaMai", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Eren Mimtas", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "M4rio_2001", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\u0631\u0647\u0627 \u0628\u0627\u0646\u0648", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\ud83c\udfac", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\u8352\u5e61\u306e\u72f8", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\ud83c\udf49\ud83d\udc3cDanicaJane\ud83d\udc36\ud83c\udf49", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\u043a\u0454\u2113\u2113y", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "TheParmesanDon", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "es tariq beep bop", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Not_Adela", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "ana \u2726 TEM O ALBEDO", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "skander", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Kuina \ud83c\udf38", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Jesse W Jackson - Vote Blue!", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "drew", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Free mover \ud83c\udf1c\ud83c\udf1b", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Gatosombra", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Calli", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Jeon Anj \u2077 \u27ed\u27ec\ud83d\udc9c\u27ec\u27ed", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Invictus Boredom", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "bochinche \ud83c\uddf3\ud83c\uddee", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "ManuelWar", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Kyle White", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Big Moon \ud83e\udd81", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Luke Sowerby/LSARTWORK \ud83c\uddec\ud83c\udde7", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\u2765Lillian\ud83c\udf35\ud83d\udd25\ud83e\udee6\ud83e\udd9a\ud83d\udc7d", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Nonie May", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Katrina MacDamaged", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Elves Vilar Dias", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "opk", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Jay.", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Da\u0146iel | Translator \ud83c\uddfa\ud83c\uddf8\ud83c\uddea\ud83c\udde6\ud83c\udde7\ud83c\uddf7\ud83c\udfb8\ud83c\udfa7", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\u0650", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "FM7", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Michael", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Pawor", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Samuel", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Elain (taylor\u0027s version) // TEAM BLACK \ud83d\udda4\u2728", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Karma", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "two people in one body", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Charlay King", "width": 1}, {"arrows": "to", "from": "HBO", "to": "D", "width": 1}, {"arrows": "to", "from": "HBO", "to": "Pretty Little Dolls/ PLL", "width": 1}, {"arrows": "to", "from": "HBO", "to": "\u044e\u043b\u044f \u0433\u0443\u0434\u043e\u043a", "width": 1}, {"arrows": "to", "from": "HBO", "to": "\u0414\u0430\u043d\u0438\u0438\u043b \u041a\u043e\u0440\u0442\u0435\u0437", "width": 1}, {"arrows": "to", "from": "BenKearns6", "to": "Anouska", "width": 1}, {"arrows": "to", "from": "BenKearns6", "to": "\ud83e\udd87 KAUL: Spooky Femboy \ud83c\udff3\ufe0f\u200d\u26a7\ufe0f", "width": 1}, {"arrows": "to", "from": "BenKearns6", "to": "Iwantapetduck", "width": 1}, {"arrows": "to", "from": "BenKearns6", "to": "Rhyseni", "width": 1}, {"arrows": "to", "from": "BenKearns6", "to": "TheParmesanDon", "width": 1}, {"arrows": "to", "from": "BenKearns6", "to": "bochinche \ud83c\uddf3\ud83c\uddee", "width": 1}, {"arrows": "to", "from": "BenKearns6", "to": "Luke Sowerby/LSARTWORK \ud83c\uddec\ud83c\udde7", "width": 1}, {"arrows": "to", "from": "BenKearns6", "to": "Nonie May", "width": 1}, {"arrows": "to", "from": "BellesBinges", "to": "BellesBinges #moviethots", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "BellesBinges #moviethots", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "es tariq beep bop", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Kuina \ud83c\udf38", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Free mover \ud83c\udf1c\ud83c\udf1b", "width": 1}, {"arrows": "to", "from": "StaceyF75387271", "to": "Pretty Little Dolls/ PLL", "width": 1}, {"arrows": "to", "from": "KeeganAllen", "to": "Pretty Little Dolls/ PLL", "width": 1}, {"arrows": "to", "from": "vzrosly_content", "to": "\u044e\u043b\u044f \u0433\u0443\u0434\u043e\u043a", "width": 1}, {"arrows": "to", "from": "Spanish_Kortez", "to": "\u044e\u043b\u044f \u0433\u0443\u0434\u043e\u043a", "width": 1}, {"arrows": "to", "from": "nojoud_r", "to": "DIVA\u2661", "width": 1}, {"arrows": "to", "from": "houseofdragontv", "to": "Walter graham", "width": 1}, {"arrows": "to", "from": "HBOHouseDragon", "to": "Walter graham", "width": 1}, {"arrows": "to", "from": "HOTDBr", "to": "Walter graham", "width": 1}, {"arrows": "to", "from": "HOTDBr", "to": "Karma", "width": 1}, {"arrows": "to", "from": "luisasonza", "to": "Ricardo", "width": 1}, {"arrows": "to", "from": "BenzoateOst", "to": "\u0414\u0430\u043d\u0438\u0438\u043b \u041a\u043e\u0440\u0442\u0435\u0437", "width": 1}, {"arrows": "to", "from": "BenzoateOst", "to": "\u0412\u0417\u0420\u041e\u0421\u041b\u042b\u0419 \u041a\u041e\u041d\u0422\u0415\u041d\u0422", "width": 1}, {"arrows": "to", "from": "DeadlineWH", "to": "Mr. Anderson", "width": 1}, {"arrows": "to", "from": "cornellbelcher", "to": "Mr. Anderson", "width": 1}, {"arrows": "to", "from": "Djawadi_Ramin", "to": "\u0631\u0647\u0627 \u0628\u0627\u0646\u0648", "width": 1}, {"arrows": "to", "from": "Djawadi_Ramin", "to": "M4rio_2001", "width": 1}, {"arrows": "to", "from": "GameOfThrones", "to": "es tariq beep bop", "width": 1}, {"arrows": "to", "from": "GameOfThrones", "to": "Jesse W Jackson - Vote Blue!", "width": 1}, {"arrows": "to", "from": "GRRMspeaking", "to": "es tariq beep bop", "width": 1}, {"arrows": "to", "from": "Schildkrote13", "to": "Kuina \ud83c\udf38", "width": 1}, {"arrows": "to", "from": "dcemyra", "to": "Kuina \ud83c\udf38", "width": 1}, {"arrows": "to", "from": "dcemyra", "to": "Free mover \ud83c\udf1c\ud83c\udf1b", "width": 1}, {"arrows": "to", "from": "WendyHembrock", "to": "Jesse W Jackson - Vote Blue!", "width": 1}, {"arrows": "to", "from": "JesseJacksonDFW", "to": "Jesse W Jackson - Vote Blue!", "width": 1}, {"arrows": "to", "from": "SCM_Pod", "to": "Jesse W Jackson - Vote Blue!", "width": 1}, {"arrows": "to", "from": "TNRLM", "to": "Jesse W Jackson - Vote Blue!", "width": 1}, {"arrows": "to", "from": "C_Peruski", "to": "Jesse W Jackson - Vote Blue!", "width": 1}, {"arrows": "to", "from": "beingmeistiring", "to": "Free mover \ud83c\udf1c\ud83c\udf1b", "width": 1}, {"arrows": "to", "from": "housedirewolf", "to": "Katrina MacDamaged", "width": 1}, {"arrows": "to", "from": "uzuriartonline", "to": "Karma", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

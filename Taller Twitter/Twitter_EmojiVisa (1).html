@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1>Emojis</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1>Emojis</h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "\ud83d\udce2", "label": "\ud83d\udce2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "IA Maodi Blue \u02e2\u1d47\u00b9\u2079\ud83c\udf33\u00b9\u2076\u00b2\ud83d\udc1d23 \ud83c\uddf5\ud83c\udded", "label": "IA Maodi Blue \u02e2\u1d47\u00b9\u2079\ud83c\udf33\u00b9\u2076\u00b2\ud83d\udc1d23 \ud83c\uddf5\ud83c\udded", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83d\ude09", "label": "\ud83d\ude09", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "jnsdeat", "label": "jnsdeat", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "licseblaci", "label": "licseblaci", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "dbred.mondw", "label": "dbred.mondw", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "mbgonzalib", "label": "mbgonzalib", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sarah\u00a0James", "label": "Sarah\u00a0James", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83c\udff4", "label": "\ud83c\udff4", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ruth Watson", "label": "Ruth Watson", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Philip Condie", "label": "Philip Condie", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "shirley young", "label": "shirley young", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83e\udd11", "label": "\ud83e\udd11", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "universal mind", "label": "universal mind", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83d\ude02", "label": "\ud83d\ude02", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Yirity", "label": "Yirity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Richard", "label": "Richard", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83e\udd23", "label": "\ud83e\udd23", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jim Rockford\u0027s answering machine", "label": "Jim Rockford\u0027s answering machine", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "John Murphy", "label": "John Murphy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83e\udd27", "label": "\ud83e\udd27", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "LiL ToP", "label": "LiL ToP", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u2764", "label": "\u2764", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83c\udf10", "label": "\ud83c\udf10", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "v\u1e5bddha\u015brav\u0101\u1e25 \u0935\u0943\u0926\u094d\u0927\u0936\u094d\u0930\u0935\u093e\u0903 007", "label": "v\u1e5bddha\u015brav\u0101\u1e25 \u0935\u0943\u0926\u094d\u0927\u0936\u094d\u0930\u0935\u093e\u0903 007", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u2705", "label": "\u2705", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83d\udc95Hadassah\ud83d\udc95", "label": "\ud83d\udc95Hadassah\ud83d\udc95", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83d\udd34", "label": "\ud83d\udd34", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "a", "label": "a", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u2665", "label": "\u2665", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SPOOKY UKI\ud83c\udf83", "label": "SPOOKY UKI\ud83c\udf83", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83e\udd14", "label": "\ud83e\udd14", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ricky", "label": "Ricky", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83d\udc80", "label": "\ud83d\udc80", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "M", "label": "M", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83e\udd26", "label": "\ud83e\udd26", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "\ud83d\udce2", "to": "IA Maodi Blue \u02e2\u1d47\u00b9\u2079\ud83c\udf33\u00b9\u2076\u00b2\ud83d\udc1d23 \ud83c\uddf5\ud83c\udded", "width": 1}, {"from": "\ud83d\ude09", "to": "jnsdeat", "width": 1}, {"from": "\ud83d\ude09", "to": "licseblaci", "width": 1}, {"from": "\ud83d\ude09", "to": "dbred.mondw", "width": 1}, {"from": "\ud83d\ude09", "to": "mbgonzalib", "width": 1}, {"from": "\ud83d\ude09", "to": "Sarah\u00a0James", "width": 1}, {"from": "\ud83c\udff4", "to": "Ruth Watson", "width": 1}, {"from": "\ud83c\udff4", "to": "Philip Condie", "width": 1}, {"from": "\ud83c\udff4", "to": "shirley young", "width": 1}, {"from": "\ud83e\udd11", "to": "universal mind", "width": 1}, {"from": "\ud83d\ude02", "to": "Yirity", "width": 1}, {"from": "\ud83d\ude02", "to": "Richard", "width": 1}, {"from": "\ud83e\udd23", "to": "Jim Rockford\u0027s answering machine", "width": 1}, {"from": "\ud83e\udd23", "to": "John Murphy", "width": 1}, {"from": "\ud83e\udd27", "to": "LiL ToP", "width": 1}, {"from": "\u2764", "to": "LiL ToP", "width": 1}, {"from": "\ud83c\udf10", "to": "v\u1e5bddha\u015brav\u0101\u1e25 \u0935\u0943\u0926\u094d\u0927\u0936\u094d\u0930\u0935\u093e\u0903 007", "width": 1}, {"from": "\u2705", "to": "\ud83d\udc95Hadassah\ud83d\udc95", "width": 1}, {"from": "\ud83d\udd34", "to": "a", "width": 1}, {"from": "\u2665", "to": "SPOOKY UKI\ud83c\udf83", "width": 1}, {"from": "\ud83e\udd14", "to": "Ricky", "width": 1}, {"from": "\ud83d\udc80", "to": "M", "width": 1}, {"from": "\ud83e\udd26", "to": "John Murphy", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1>Mentions</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1>Mentions</h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 400px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 400px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "hbomax", "label": "hbomax", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "House of the Dragon", "label": "House of the Dragon", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nathali", "label": "Nathali", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "The(e) Linda Cardwell Resister", "label": "The(e) Linda Cardwell Resister", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "#feeLthErhythm", "label": "#feeLthErhythm", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "kingpriest", "label": "kingpriest", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Yaya \ud83c\udf6f", "label": "Yaya \ud83c\udf6f", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Myles Bryant", "label": "Myles Bryant", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "e eu Targaryen", "label": "e eu Targaryen", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Angela Bulla", "label": "Angela Bulla", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ismael.", "label": "Ismael.", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "n \ud83c\udf41", "label": "n \ud83c\udf41", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Karibel", "label": "Karibel", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "raheem the vigilantee", "label": "raheem the vigilantee", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "mr. rightnow \ud83e\udd34\ud83c\udffe", "label": "mr. rightnow \ud83e\udd34\ud83c\udffe", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Coco Kilty \ud83d\ude0e\u270c\ud83c\udffb", "label": "Coco Kilty \ud83d\ude0e\u270c\ud83c\udffb", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "J\u00e5y\ud835\udc84\ud835\udc90\ud835\udc83 sp\u00efce \ud83c\uddec\ud83c\udded\ud83c\uddf3\ud83c\uddec", "label": "J\u00e5y\ud835\udc84\ud835\udc90\ud835\udc83 sp\u00efce \ud83c\uddec\ud83c\udded\ud83c\uddf3\ud83c\uddec", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SLICE!", "label": "SLICE!", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Daniel Fern\u00e1ndez", "label": "Daniel Fern\u00e1ndez", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Loeb Maxime", "label": "Loeb Maxime", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Waleed_Kronos", "label": "Waleed_Kronos", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "scxtt van Bronckhorst \u2790", "label": "scxtt van Bronckhorst \u2790", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Camilo Targaryen \ud83d\udc09", "label": "Camilo Targaryen \ud83d\udc09", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kyoukai", "label": "Kyoukai", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Joaquim C Assis", "label": "Joaquim C Assis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\u05c2\u05c2", "label": "\u05c2\u05c2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kingsley Oduro", "label": "Kingsley Oduro", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sidinho filho de Rhaenys Targaryen", "label": "Sidinho filho de Rhaenys Targaryen", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TARGARYEN", "label": "TARGARYEN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Emmbeekay\ud83d\udcaf\ud83d\udcaf", "label": "Emmbeekay\ud83d\udcaf\ud83d\udcaf", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "olden", "label": "olden", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Travis Turbe", "label": "Travis Turbe", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "donald\ud83e\udd76", "label": "donald\ud83e\udd76", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kagiso", "label": "Kagiso", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud835\udd2a\ud835\udd1e\ud835\udd21\ud835\udd30\u2661\ud81a\udd10 - she/they", "label": "\ud835\udd2a\ud835\udd1e\ud835\udd21\ud835\udd30\u2661\ud81a\udd10 - she/they", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "mai turare", "label": "mai turare", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ufonumo", "label": "Ufonumo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Winter is Coming", "label": "Winter is Coming", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Utkarsh Jathar", "label": "Utkarsh Jathar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "KelvinK", "label": "KelvinK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Richard", "label": "Richard", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rheagar.T", "label": "Rheagar.T", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Glenn_Gee", "label": "Glenn_Gee", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Arthur", "label": "Arthur", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Adam A. A.", "label": "Adam A. A.", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Donny P", "label": "Donny P", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "kelechi", "label": "kelechi", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PersicoVince", "label": "PersicoVince", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "label": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ClaMarchisio8", "label": "ClaMarchisio8", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "label": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HouseofDragon", "label": "HouseofDragon", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "\ud80c\uded4\ud80c\udef9Scorpio\ud80c\udc80Sam\ud80c\udef9\ud80c\udc62\ud80c\uded4\ud80c\udc5f", "label": "\ud80c\uded4\ud80c\udef9Scorpio\ud80c\udc80Sam\ud80c\udef9\ud80c\udc62\ud80c\uded4\ud80c\udc5f", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Major", "label": "Major", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "David", "label": "David", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ajith Kumar Cs", "label": "Ajith Kumar Cs", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "13", "label": "13", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Joaquin Patino", "label": "Joaquin Patino", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kaushik Jhaver", "label": "Kaushik Jhaver", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "The_One_With_Perfection", "label": "The_One_With_Perfection", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sarah", "label": "Sarah", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Too Much Man", "label": "Too Much Man", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Brittney Merker \ufe3d\u2735\ufe3d", "label": "Brittney Merker \ufe3d\u2735\ufe3d", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kevin Ong", "label": "Kevin Ong", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "mahmud", "label": "mahmud", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Flo", "label": "Flo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Eric Wisdom", "label": "Eric Wisdom", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Hime / Kotoko Iwanaga", "label": "Hime / Kotoko Iwanaga", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ruthwik Rao", "label": "Ruthwik Rao", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Mois\u00e9s Galindo", "label": "Mois\u00e9s Galindo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Lester", "label": "Lester", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Marueny Aguilar", "label": "Marueny Aguilar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Mel Davison", "label": "Mel Davison", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "leslie\ud83d\ude4b\ud83c\udffe\u200d\u2640\ufe0f\ud83d\udc8c", "label": "leslie\ud83d\ude4b\ud83c\udffe\u200d\u2640\ufe0f\ud83d\udc8c", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Carla \ud83c\udf33\ud83c\udf4a", "label": "Carla \ud83c\udf33\ud83c\udf4a", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "al.ha", "label": "al.ha", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ana.bela.paris \ud83c\uddeb\ud83c\uddf7\u2696\ufe0f\ud83c\uddf5\ud83c\uddf9\ud83d\udc83\ud83c\udffc", "label": "ana.bela.paris \ud83c\uddeb\ud83c\uddf7\u2696\ufe0f\ud83c\uddf5\ud83c\uddf9\ud83d\udc83\ud83c\udffc", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Melissa", "label": "Melissa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "At\u2728", "label": "At\u2728", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "leclercbatch", "label": "leclercbatch", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "thetrueshade", "label": "thetrueshade", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "giadaxjs", "label": "giadaxjs", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jess_Mars", "label": "Jess_Mars", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "gessica_stile32", "label": "gessica_stile32", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "byDesy_", "label": "byDesy_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "manidaneonato", "label": "manidaneonato", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Hodg3inh010", "label": "Hodg3inh010", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ConorFaulds_", "label": "ConorFaulds_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "AgurtoVidal", "label": "AgurtoVidal", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ElChapoG", "label": "ElChapoG", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PreviouslySerie", "label": "PreviouslySerie", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Miguel \u00c1ngel Moya Blanco", "label": "Miguel \u00c1ngel Moya Blanco", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "RBRacingRPM", "label": "RBRacingRPM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "rmundel", "label": "rmundel", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TheCrownNetflix", "label": "TheCrownNetflix", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "bxbblegumbarbie", "label": "bxbblegumbarbie", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "sharpeseloise", "label": "sharpeseloise", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "a.polo\ud83c\udf31\ud83e\udee7", "label": "a.polo\ud83c\udf31\ud83e\udee7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "daenystormborn_", "label": "daenystormborn_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ThreepioZee", "label": "ThreepioZee", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "General Kenobi", "label": "General Kenobi", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "raychcroft", "label": "raychcroft", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "K3ViN64", "label": "K3ViN64", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ye_Yeezus_Ye", "label": "Ye_Yeezus_Ye", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "hbomax", "to": "House of the Dragon", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Nathali", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "The(e) Linda Cardwell Resister", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "#feeLthErhythm", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "kingpriest", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Yaya \ud83c\udf6f", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Myles Bryant", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "e eu Targaryen", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Angela Bulla", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Ismael.", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "n \ud83c\udf41", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Karibel", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "raheem the vigilantee", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "mr. rightnow \ud83e\udd34\ud83c\udffe", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Coco Kilty \ud83d\ude0e\u270c\ud83c\udffb", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "J\u00e5y\ud835\udc84\ud835\udc90\ud835\udc83 sp\u00efce \ud83c\uddec\ud83c\udded\ud83c\uddf3\ud83c\uddec", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "SLICE!", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Daniel Fern\u00e1ndez", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Loeb Maxime", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Waleed_Kronos", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "scxtt van Bronckhorst \u2790", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Camilo Targaryen \ud83d\udc09", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Kyoukai", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Joaquim C Assis", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "\u05c2\u05c2", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Kingsley Oduro", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Sidinho filho de Rhaenys Targaryen", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "TARGARYEN", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Emmbeekay\ud83d\udcaf\ud83d\udcaf", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "olden", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Travis Turbe", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "donald\ud83e\udd76", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Kagiso", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "\ud835\udd2a\ud835\udd1e\ud835\udd21\ud835\udd30\u2661\ud81a\udd10 - she/they", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "mai turare", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Ufonumo", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Winter is Coming", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Utkarsh Jathar", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "KelvinK", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Richard", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Rheagar.T", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Glenn_Gee", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Arthur", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Adam A. A.", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "Donny P", "width": 1}, {"arrows": "to", "from": "hbomax", "to": "kelechi", "width": 1}, {"arrows": "to", "from": "PersicoVince", "to": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "width": 1}, {"arrows": "to", "from": "ClaMarchisio8", "to": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "width": 1}, {"arrows": "to", "from": "ClaMarchisio8", "to": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Nathali", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "The(e) Linda Cardwell Resister", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\ud80c\uded4\ud80c\udef9Scorpio\ud80c\udc80Sam\ud80c\udef9\ud80c\udc62\ud80c\uded4\ud80c\udc5f", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Major", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "David", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "#feeLthErhythm", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Ajith Kumar Cs", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "13", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Joaquin Patino", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "kingpriest", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Yaya \ud83c\udf6f", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Myles Bryant", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Kaushik Jhaver", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "e eu Targaryen", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Angela Bulla", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Ismael.", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "The_One_With_Perfection", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "n \ud83c\udf41", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Karibel", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Sarah", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Too Much Man", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Brittney Merker \ufe3d\u2735\ufe3d", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Kevin Ong", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "raheem the vigilantee", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "mr. rightnow \ud83e\udd34\ud83c\udffe", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Coco Kilty \ud83d\ude0e\u270c\ud83c\udffb", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "mahmud", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Flo", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "J\u00e5y\ud835\udc84\ud835\udc90\ud835\udc83 sp\u00efce \ud83c\uddec\ud83c\udded\ud83c\uddf3\ud83c\uddec", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "SLICE!", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Daniel Fern\u00e1ndez", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Eric Wisdom", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Hime / Kotoko Iwanaga", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Loeb Maxime", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Waleed_Kronos", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "scxtt van Bronckhorst \u2790", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Camilo Targaryen \ud83d\udc09", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Ruthwik Rao", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Kyoukai", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Joaquim C Assis", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Mois\u00e9s Galindo", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Lester", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Marueny Aguilar", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\u05c2\u05c2", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Kingsley Oduro", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Sidinho filho de Rhaenys Targaryen", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "TARGARYEN", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Emmbeekay\ud83d\udcaf\ud83d\udcaf", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Mel Davison", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "olden", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Travis Turbe", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "donald\ud83e\udd76", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Kagiso", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "\ud835\udd2a\ud835\udd1e\ud835\udd21\ud835\udd30\u2661\ud81a\udd10 - she/they", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "mai turare", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "leslie\ud83d\ude4b\ud83c\udffe\u200d\u2640\ufe0f\ud83d\udc8c", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Ufonumo", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Carla \ud83c\udf33\ud83c\udf4a", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Winter is Coming", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Utkarsh Jathar", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "al.ha", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "KelvinK", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Richard", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Rheagar.T", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Glenn_Gee", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "ana.bela.paris \ud83c\uddeb\ud83c\uddf7\u2696\ufe0f\ud83c\uddf5\ud83c\uddf9\ud83d\udc83\ud83c\udffc", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Arthur", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Adam A. A.", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Melissa", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "Donny P", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "kelechi", "width": 1}, {"arrows": "to", "from": "HouseofDragon", "to": "At\u2728", "width": 1}, {"arrows": "to", "from": "leclercbatch", "to": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "width": 1}, {"arrows": "to", "from": "leclercbatch", "to": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "width": 1}, {"arrows": "to", "from": "thetrueshade", "to": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "width": 1}, {"arrows": "to", "from": "thetrueshade", "to": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "width": 1}, {"arrows": "to", "from": "giadaxjs", "to": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "width": 1}, {"arrows": "to", "from": "giadaxjs", "to": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "width": 1}, {"arrows": "to", "from": "Jess_Mars", "to": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "width": 1}, {"arrows": "to", "from": "Jess_Mars", "to": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "width": 1}, {"arrows": "to", "from": "gessica_stile32", "to": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "width": 1}, {"arrows": "to", "from": "gessica_stile32", "to": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "width": 1}, {"arrows": "to", "from": "byDesy_", "to": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "width": 1}, {"arrows": "to", "from": "byDesy_", "to": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "width": 1}, {"arrows": "to", "from": "manidaneonato", "to": "\ud83e\udde1\ud83d\udc09 \u21ab \ud835\udc73\ud835\udc68\ud835\udc6b\ud835\udc80 \ud835\udc69\ud835\udc79\ud835\udc70\ud835\udc6c \u21ac \ud83d\udd25\ud83e\ude78", "width": 1}, {"arrows": "to", "from": "manidaneonato", "to": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "width": 1}, {"arrows": "to", "from": "Hodg3inh010", "to": "Coco Kilty \ud83d\ude0e\u270c\ud83c\udffb", "width": 1}, {"arrows": "to", "from": "ConorFaulds_", "to": "Coco Kilty \ud83d\ude0e\u270c\ud83c\udffb", "width": 1}, {"arrows": "to", "from": "AgurtoVidal", "to": "ElChapoG", "width": 1}, {"arrows": "to", "from": "PreviouslySerie", "to": "Miguel \u00c1ngel Moya Blanco", "width": 1}, {"arrows": "to", "from": "RBRacingRPM", "to": "Ruthwik Rao", "width": 1}, {"arrows": "to", "from": "rmundel", "to": "Joaquim C Assis", "width": 1}, {"arrows": "to", "from": "TheCrownNetflix", "to": "Mel Davison", "width": 1}, {"arrows": "to", "from": "bxbblegumbarbie", "to": "leslie\ud83d\ude4b\ud83c\udffe\u200d\u2640\ufe0f\ud83d\udc8c", "width": 1}, {"arrows": "to", "from": "sharpeseloise", "to": "a.polo\ud83c\udf31\ud83e\udee7", "width": 1}, {"arrows": "to", "from": "daenystormborn_", "to": "VincePersico\ud83d\udc19\ud83c\uddf7\ud83c\uddf8DV9ERA", "width": 1}, {"arrows": "to", "from": "ThreepioZee", "to": "General Kenobi", "width": 1}, {"arrows": "to", "from": "raychcroft", "to": "Donny P", "width": 1}, {"arrows": "to", "from": "K3ViN64", "to": "Donny P", "width": 1}, {"arrows": "to", "from": "Ye_Yeezus_Ye", "to": "Donny P", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
